@@ -1,0 +1,100 @@
+package com.example.ticketbuilder.controllers;
+
+import com.example.ticketbuilder.dao.*;
+import com.example.ticketbuilder.model.*;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.List;
+
+public class CreateController {
+
+    public Button btnBack;
+    @FXML
+    private ComboBox<Student> cmbStudents;
+    @FXML
+    private TextArea txtTicket;
+
+    private final TicketHistoryDAO historyDAO = new TicketHistoryDAO();
+
+    private int currentTicketId;
+
+    private final StudentDAO studentDAO = new StudentDAO();
+
+    @FXML
+    public void initialize() {
+        loadStudents();
+    }
+
+    private void loadStudents() {
+        cmbStudents.getItems().clear();
+        cmbStudents.getItems().addAll(studentDAO.findAll());
+    }
+
+    @FXML
+    private void generateTicket() {
+
+        Student student = cmbStudents.getValue();
+        if (student == null) {
+            showAlert("Выберите ученика");
+            return;
+        }
+
+        List<Question> questions =
+                historyDAO.generateTicket(student.getId(), 3);
+
+        currentTicketId = historyDAO.getLastTicketId();
+
+        showTicket(questions);
+        enterScores(questions);
+    }
+
+    @FXML
+    private void onBack() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+            Stage stage = (Stage) btnBack.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.sizeToScene(); // ← ВАЖНО
+        } catch (IOException exc) {
+            throw new RuntimeException(exc);
+        }
+
+    }
+
+
+    private void enterScores(List<Question> questions) {
+        for (Question q : questions) {
+            TextInputDialog d = new TextInputDialog();
+            d.setHeaderText("Оценка за вопрос");
+            d.setContentText(q.getText());
+
+            d.showAndWait().ifPresent(v ->
+                    historyDAO.updateScore(
+                            currentTicketId, q.getId(),
+                            Integer.parseInt(v)
+                    )
+            );
+        }
+    }
+
+    private void showTicket(List<Question> questions) {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (Question q : questions) {
+            sb.append(i++).append(". ").append(q.getText()).append("\n\n");
+        }
+        txtTicket.setText(sb.toString());
+    }
+
+    private void showAlert(String text) {
+        new Alert(Alert.AlertType.WARNING, text).show();
+    }
+}
+

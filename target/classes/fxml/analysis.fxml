@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ticketbuilder.controllers.AnalysisController">
+   <children>
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="395.0" minHeight="10.0" prefHeight="385.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="45.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+      
+             <TableView fx:id="table" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                 <columns>
+                     <TableColumn fx:id="colText" prefWidth="300" text="Вопрос" />
+                     <TableColumn fx:id="colUsed" prefWidth="100" text="Использован" />
+                     <TableColumn fx:id="colAvg" prefWidth="100" text="Средний балл" />
+                 </columns>
+             </TableView>
+            <Button mnemonicParsing="false" text="Назад" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="btnBack" onAction="#onBack"/>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

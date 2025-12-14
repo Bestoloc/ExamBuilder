@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.ticketbuilder.controllers.LoginController"
+      spacing="10"
+      alignment="CENTER">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Вход преподавателя"
+           style="-fx-font-size:16px; -fx-font-weight:bold"/>
+
+    <TextField fx:id="textLogin" promptText="Логин"/>
+    <PasswordField fx:id="txtPassword" promptText="Пароль"/>
+
+    <Button text="Войти" onAction="#onLogin" fx:id="btnJoin"/>
+
+    <Label fx:id="labelError" textFill="red"/>
+
+</VBox>
