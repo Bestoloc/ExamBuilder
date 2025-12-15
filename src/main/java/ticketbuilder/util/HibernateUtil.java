@@ -1,4 +1,4 @@
-package com.example.ticketbuilder.util;
+package ticketbuilder.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

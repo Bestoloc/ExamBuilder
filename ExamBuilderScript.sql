@@ -47,7 +47,8 @@ CREATE TABLE ticket_history (
     question_id INT NOT NULL,
     student_id int REFERENCES students(id),
     score INT,  -- студент получил за этот вопрос
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    comment text
 );
 
 CREATE TABLE users (

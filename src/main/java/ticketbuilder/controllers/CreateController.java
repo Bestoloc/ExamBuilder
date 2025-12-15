@@ -1,7 +1,7 @@
-package com.example.ticketbuilder.controllers;
+package ticketbuilder.controllers;
 
-import com.example.ticketbuilder.dao.*;
-import com.example.ticketbuilder.model.*;
+import ticketbuilder.dao.*;
+import ticketbuilder.model.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import ticketbuilder.dao.StudentDAO;
+import ticketbuilder.dao.TicketHistoryDAO;
+import ticketbuilder.model.Question;
+import ticketbuilder.model.Student;
 
 import java.io.IOException;
 import java.util.List;

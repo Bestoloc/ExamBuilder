@@ -1,4 +1,4 @@
-package com.example.ticketbuilder.controllers;
+package ticketbuilder.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

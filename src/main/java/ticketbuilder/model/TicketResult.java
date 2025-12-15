@@ -1,4 +1,4 @@
-package com.example.ticketbuilder.model;
+package ticketbuilder.model;
 
 import java.util.List;
 

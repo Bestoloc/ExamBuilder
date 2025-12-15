@@ -1,9 +1,9 @@
-package com.example.ticketbuilder.controllers;
+package ticketbuilder.controllers;
 
-import com.example.ticketbuilder.dao.StudentDAO;
-import com.example.ticketbuilder.dao.TicketHistoryDAO;
-import com.example.ticketbuilder.model.AnalysisRow;
-import com.example.ticketbuilder.model.Student;
+import ticketbuilder.dao.StudentDAO;
+import ticketbuilder.dao.TicketHistoryDAO;
+import ticketbuilder.model.AnalysisRow;
+import ticketbuilder.model.Student;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

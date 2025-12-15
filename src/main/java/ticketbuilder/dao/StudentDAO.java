@@ -1,7 +1,7 @@
-package com.example.ticketbuilder.dao;
+package ticketbuilder.dao;
 
-import com.example.ticketbuilder.util.HibernateUtil;
-import com.example.ticketbuilder.model.Student;
+import ticketbuilder.util.HibernateUtil;
+import ticketbuilder.model.Student;
 import org.hibernate.Session;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.example.ticketbuilder.controllers;
+package ticketbuilder.controllers;
 
-import com.example.ticketbuilder.dao.UserDAO;
-import com.example.ticketbuilder.model.User;
+import ticketbuilder.dao.UserDAO;
+import ticketbuilder.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
