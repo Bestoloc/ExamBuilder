@@ -2,11 +2,11 @@ package com.example.ticketbuilder.model;
 
 public class AnalysisRow {
 
-    private Integer questionId;
-    private String questionText;
-    private Long usedCount;
-    private Double averageScore;
-    private String comment;
+    private final Integer questionId;
+    private final String questionText;
+    private final Long usedCount;
+    private final Double averageScore;
+    private final String comment;
 
     public AnalysisRow(Integer questionId,
                        String questionText,

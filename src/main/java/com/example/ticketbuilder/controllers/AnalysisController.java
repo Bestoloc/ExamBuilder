@@ -4,7 +4,6 @@ import com.example.ticketbuilder.dao.StudentDAO;
 import com.example.ticketbuilder.dao.TicketHistoryDAO;
 import com.example.ticketbuilder.model.AnalysisRow;
 import com.example.ticketbuilder.model.Student;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,8 +30,6 @@ public class AnalysisController {
     @FXML private TableColumn<AnalysisRow, Double> colAvg;
     @FXML private TableColumn<AnalysisRow, String> colComment;
 
-
-
     private final TicketHistoryDAO dao = new TicketHistoryDAO();
 
     @FXML
@@ -42,7 +39,7 @@ public class AnalysisController {
             Stage stage = (Stage) btnBack.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Главное окно");
-            stage.sizeToScene(); // ← ВАЖНО
+            stage.sizeToScene();
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }

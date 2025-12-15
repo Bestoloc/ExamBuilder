@@ -2,8 +2,6 @@ package com.example.ticketbuilder.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "ticket_history")
 public class TicketHistory {
@@ -48,8 +46,6 @@ public class TicketHistory {
     public void setScore(Integer score) {
         this.score = score;
     }
-
-    // getters (можно сгенерировать)
 }
 
 

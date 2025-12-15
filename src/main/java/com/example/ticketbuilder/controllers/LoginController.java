@@ -4,15 +4,11 @@ import com.example.ticketbuilder.dao.UserDAO;
 import com.example.ticketbuilder.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import jdk.jfr.Label;
 
-import java.awt.*;
-import java.awt.TextField;
 import java.io.IOException;
 
 public class LoginController {
@@ -59,9 +55,5 @@ public class LoginController {
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }
-    }
-
-    private void close() {
-        ((Stage) textLogin.getScene().getWindow()).close();
     }
 }

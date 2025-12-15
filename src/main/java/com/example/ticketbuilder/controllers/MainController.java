@@ -1,15 +1,12 @@
 package com.example.ticketbuilder.controllers;
 
-import com.example.ticketbuilder.MainApp;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class MainController {
 
@@ -29,8 +26,8 @@ public class MainController {
             );
             Stage stage = (Stage) btnCreate.getScene().getWindow();
             stage.setTitle("Авторизация");
-            stage.setScene(scene);      // ✅ ВАЖНО
-            stage.sizeToScene();        // ✅ берёт размеры из FXML
+            stage.setScene(scene);      // ВАЖНО
+            stage.sizeToScene();        // берёт размеры из FXML
             stage.setResizable(false);
             stage.show();
 
@@ -52,8 +49,8 @@ public class MainController {
             );
             Stage stage = (Stage) btnCreate.getScene().getWindow();
             stage.setTitle("Анализ");
-            stage.setScene(scene);      // ✅ ВАЖНО
-            stage.sizeToScene();        // ✅ берёт размеры из FXML
+            stage.setScene(scene);      //  ВАЖНО
+            stage.sizeToScene();        //  берёт размеры из FXML
             stage.setResizable(false);
             stage.show();
 

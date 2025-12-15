@@ -76,17 +76,17 @@ public class TicketHistoryDAO {
 
         List<Object[]> result = session.createQuery("""
         SELECT
-            q.id,                
-            q.text,              
-            COUNT(th.id),        
-            AVG(th.score),       
-            th.comment           
+            q.id,               \s
+            q.text,             \s
+            COUNT(th.id),       \s
+            AVG(th.score),      \s
+            th.comment          \s
         FROM TicketHistory th
         JOIN th.question q
         WHERE th.student.id = :studentId
         GROUP BY q.id, q.text, th.comment
         ORDER BY q.id
-    """, Object[].class)
+   \s""", Object[].class)
                 .setParameter("studentId", studentId)
                 .getResultList();
 
