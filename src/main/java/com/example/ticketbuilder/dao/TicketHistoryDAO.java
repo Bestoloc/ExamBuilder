@@ -44,35 +44,72 @@ public class TicketHistoryDAO {
         return lastTicketId;
     }
 
-    public void updateScore(int ticketId, int questionId, int score) {
+    public void updateScoreAndComment(
+            int ticketId,
+            int questionId,
+            int score,
+            String comment) {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         TicketHistory th = session.createQuery(
-                        "FROM TicketHistory WHERE ticketId = :t AND question.id = :q",
+                        "FROM TicketHistory " +
+                                "WHERE ticketId = :t AND question.id = :q",
                         TicketHistory.class)
                 .setParameter("t", ticketId)
                 .setParameter("q", questionId)
                 .getSingleResult();
 
         th.setScore(score);
+        th.setComment(comment);
+
         session.merge(th);
 
         tx.commit();
         session.close();
     }
 
-    public List<Object[]> getAnalysis() {
+    public static List<Object[]> getAnalysisByStudent(int studentId) {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List<Object[]> result = session.createQuery(
-                "SELECT q.text, COUNT(th.id), AVG(th.score) " +
-                        "FROM TicketHistory th JOIN th.question q " +
-                        "GROUP BY q.text",
-                Object[].class
-        ).list();
+        List<Object[]> result = session.createQuery("""
+        SELECT
+            q.id,                
+            q.text,              
+            COUNT(th.id),        
+            AVG(th.score),       
+            th.comment           
+        FROM TicketHistory th
+        JOIN th.question q
+        WHERE th.student.id = :studentId
+        GROUP BY q.id, q.text, th.comment
+        ORDER BY q.id
+    """, Object[].class)
+                .setParameter("studentId", studentId)
+                .getResultList();
+
+        session.close();
+        return result;
+    }
+
+    public static List<Object[]> getGlobalAnalysis() {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<Object[]> result = session.createQuery("""
+        SELECT
+            q.id,
+            q.text,
+            COUNT(th.id),
+            AVG(th.score)
+        FROM TicketHistory th
+        JOIN th.question q
+        GROUP BY q.id, q.text
+        ORDER BY q.id
+    """, Object[].class)
+                .getResultList();
 
         session.close();
         return result;

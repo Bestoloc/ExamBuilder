@@ -8,7 +8,7 @@ import java.util.List;
 
 public class StudentDAO {
 
-    public List<Student> findAll() {
+    public static List<Student> findAll() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Student> students =

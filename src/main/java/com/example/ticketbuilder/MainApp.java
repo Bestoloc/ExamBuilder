@@ -1,22 +1,37 @@
 package com.example.ticketbuilder;
 
+import com.sun.tools.javac.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.Objects;
+
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(
+
+        FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/fxml/login.fxml")
         );
+
+        Scene scene = new Scene(loader.load());
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
+
         stage.setTitle("Авторизация");
-        stage.setScene(new Scene(root, 350, 250));
+        stage.setScene(scene);      // ✅ ВАЖНО
+        stage.sizeToScene();        // ✅ берёт размеры из FXML
+        stage.setResizable(false);  // по желанию
         stage.show();
     }
+
 
 
     public static void main(String[] args) {

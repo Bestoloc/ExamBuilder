@@ -19,10 +19,21 @@ public class MainController {
     @FXML
     private void onCreate() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/create.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/create.fxml")
+            );
+            Scene scene = new Scene(loader.load());
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
             Stage stage = (Stage) btnCreate.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // ← ВАЖНО
+            stage.setTitle("Авторизация");
+            stage.setScene(scene);      // ✅ ВАЖНО
+            stage.sizeToScene();        // ✅ берёт размеры из FXML
+            stage.setResizable(false);
+            stage.show();
+
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }
@@ -31,10 +42,21 @@ public class MainController {
     @FXML
     private void onAnalysis() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/analysis.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/analysis.fxml")
+            );
+            Scene scene = new Scene(loader.load());
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
             Stage stage = (Stage) btnCreate.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // ← ВАЖНО
+            stage.setTitle("Анализ");
+            stage.setScene(scene);      // ✅ ВАЖНО
+            stage.sizeToScene();        // ✅ берёт размеры из FXML
+            stage.setResizable(false);
+            stage.show();
+
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }

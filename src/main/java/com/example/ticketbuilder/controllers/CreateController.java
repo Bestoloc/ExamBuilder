@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class CreateController {
 
@@ -61,28 +62,43 @@ public class CreateController {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
             Stage stage = (Stage) btnBack.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.sizeToScene(); // ← ВАЖНО
+            stage.setTitle("Главное окно");
+            stage.sizeToScene();
         } catch (IOException exc) {
             throw new RuntimeException(exc);
         }
-
     }
 
-
     private void enterScores(List<Question> questions) {
-        for (Question q : questions) {
-            TextInputDialog d = new TextInputDialog();
-            d.setHeaderText("Оценка за вопрос");
-            d.setContentText(q.getText());
 
-            d.showAndWait().ifPresent(v ->
-                    historyDAO.updateScore(
-                            currentTicketId, q.getId(),
-                            Integer.parseInt(v)
-                    )
+        for (Question q : questions) {
+
+            TextInputDialog scoreDialog = new TextInputDialog();
+            scoreDialog.setTitle("Оценка");
+            scoreDialog.setHeaderText("Введите оценку за вопрос");
+            scoreDialog.setContentText(q.getText());
+
+            Optional<String> scoreResult = scoreDialog.showAndWait();
+            if (scoreResult.isEmpty()) continue;
+
+            int score = Integer.parseInt(scoreResult.get());
+
+            TextInputDialog commentDialog = new TextInputDialog();
+            commentDialog.setTitle("Комментарий");
+            commentDialog.setHeaderText("Комментарий к вопросу");
+            commentDialog.setContentText("Комментарий:");
+
+            String comment = commentDialog.showAndWait().orElse(null);
+
+            historyDAO.updateScoreAndComment(
+                    currentTicketId,
+                    q.getId(),
+                    score,
+                    comment
             );
         }
     }
+
 
     private void showTicket(List<Question> questions) {
         StringBuilder sb = new StringBuilder();

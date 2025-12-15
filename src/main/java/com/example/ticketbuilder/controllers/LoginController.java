@@ -13,6 +13,7 @@ import jdk.jfr.Label;
 
 import java.awt.*;
 import java.awt.TextField;
+import java.io.IOException;
 
 public class LoginController {
 
@@ -36,17 +37,27 @@ public class LoginController {
         }
 
         openMain();
-        close();
     }
 
     private void openMain() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/main.fxml")
+            );
+            Scene scene = new Scene(loader.load());
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
             Stage stage = (Stage) btnJoin.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // ← ВАЖНО
-        } catch (Exception e) {
-            e.printStackTrace();
+            stage.setTitle("Главное окно");
+            stage.setScene(scene);      // ✅ ВАЖНО
+            stage.sizeToScene();        // ✅ берёт размеры из FXML
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (IOException exc) {
+            throw new RuntimeException(exc);
         }
     }
 
