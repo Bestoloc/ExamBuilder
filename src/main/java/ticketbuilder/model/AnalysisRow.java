@@ -1,28 +1,48 @@
 package ticketbuilder.model;
 
+import javafx.beans.property.*;
+
 public class AnalysisRow {
 
-    private final Integer questionId;
-    private final String questionText;
-    private final Long usedCount;
-    private final Double averageScore;
-    private final String comment;
+    private final IntegerProperty questionId;
+    private final StringProperty questionText;
+    private final StringProperty topicName;
+    private final IntegerProperty difficulty;
+    private final LongProperty usageCount;
+    private final DoubleProperty averageScore;
+    private final StringProperty comment;
 
-    public AnalysisRow(Integer questionId,
-                       String questionText,
-                       Long usedCount,
-                       Double averageScore,
-                       String comment) {
-        this.questionId = questionId;
-        this.questionText = questionText;
-        this.usedCount = usedCount;
-        this.averageScore = averageScore;
-        this.comment = comment;
+    public AnalysisRow(
+            Integer questionId,
+            String questionText,
+            String topicName,
+            Integer difficulty,
+            Long usageCount,
+            Double averageScore,
+            String comment
+    ) {
+        this.questionId = new SimpleIntegerProperty(questionId);
+        this.questionText = new SimpleStringProperty(questionText);
+        this.topicName = new SimpleStringProperty(topicName);
+        this.difficulty = new SimpleIntegerProperty(difficulty);
+        this.usageCount = new SimpleLongProperty(usageCount);
+        this.averageScore = new SimpleDoubleProperty(
+                averageScore == null ? 0.0 : averageScore
+        );
+        this.comment = new SimpleStringProperty(
+                comment == null ? "" : comment
+        );
     }
 
-    public Integer getQuestionId() { return questionId; }
-    public String getQuestionText() { return questionText; }
-    public Long getUsedCount() { return usedCount; }
-    public Double getAverageScore() { return averageScore; }
-    public String getComment() { return comment; }
+    // 🔥 ОБЯЗАТЕЛЬНО property-методы
+
+    public IntegerProperty questionIdProperty() { return questionId; }
+    public StringProperty questionTextProperty() { return questionText; }
+    public StringProperty topicNameProperty() { return topicName; }
+    public IntegerProperty difficultyProperty() {return difficulty;}
+    public LongProperty usageCountProperty() { return usageCount; }
+    public DoubleProperty averageScoreProperty() { return averageScore; }
+    public StringProperty commentProperty() { return comment; }
 }
+
+

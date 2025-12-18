@@ -14,13 +14,7 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/fxml/login.fxml")
         );
-
         Scene scene = new Scene(loader.load());
-
-        scene.getStylesheets().add(
-                getClass().getResource("/style.css").toExternalForm()
-        );
-
         stage.setTitle("Авторизация");
         stage.setScene(scene);      // ✅ ВАЖНО
         stage.sizeToScene();        // ✅ берёт размеры из FXML

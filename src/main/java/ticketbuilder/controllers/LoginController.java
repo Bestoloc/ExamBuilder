@@ -1,5 +1,8 @@
 package ticketbuilder.controllers;
 
+import javafx.animation.FadeTransition;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 import ticketbuilder.dao.UserDAO;
 import ticketbuilder.model.User;
 import javafx.fxml.FXML;
@@ -17,8 +20,16 @@ public class LoginController {
     @FXML public javafx.scene.control.Label labelError;
     public Button btnJoin;
     @FXML private PasswordField txtPassword;
-
+    @FXML private AnchorPane root;
     private final UserDAO userDAO = new UserDAO();
+
+    @FXML
+    private void initialize() {
+        FadeTransition ft = new FadeTransition(Duration.millis(400), root);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+    }
 
     @FXML
     private void onLogin() {
@@ -41,10 +52,6 @@ public class LoginController {
                     getClass().getResource("/fxml/main.fxml")
             );
             Scene scene = new Scene(loader.load());
-
-            scene.getStylesheets().add(
-                    getClass().getResource("/style.css").toExternalForm()
-            );
             Stage stage = (Stage) btnJoin.getScene().getWindow();
             stage.setTitle("Главное окно");
             stage.setScene(scene);      // ✅ ВАЖНО

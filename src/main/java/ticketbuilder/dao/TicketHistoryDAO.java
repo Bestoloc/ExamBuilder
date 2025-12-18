@@ -8,46 +8,69 @@ import ticketbuilder.model.*;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class TicketHistoryDAO {
 
     private int lastTicketId;
 
-    public List<Question> generateTicket(int studentId, int count) {
+    public static TicketResult generateTicket(Student student, Topic topic) {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
-        Student student = session.get(Student.class, studentId);
+        int ticketId = (int) (System.currentTimeMillis() / 1000);
 
-        List<Question> questions = session.createQuery(
-                        "FROM Question ORDER BY random()", Question.class)
-                .setMaxResults(count)
-                .list();
+        List<Question> questions = new ArrayList<>();
 
-        lastTicketId = (int) (System.currentTimeMillis() / 1000);
+        for (int difficulty = 1; difficulty <= 3; difficulty++) {
 
-        for (Question q : questions) {
+            Question q = session.createQuery(
+                            """
+                            FROM Question
+                            WHERE topic = :topic
+                              AND difficulty = :diff
+                            ORDER BY random()
+                            """,
+                            Question.class
+                    )
+                    .setParameter("topic", topic)
+                    .setParameter("diff", difficulty)
+                    .setMaxResults(1)
+                    .uniqueResult();
+
+            if (q == null) {
+                tx.rollback();
+                session.close();
+                throw new RuntimeException(
+                        "Недостаточно вопросов сложности " + difficulty
+                );
+            }
+
+            questions.add(q);
+
             TicketHistory th = new TicketHistory();
-            th.setTicketId(lastTicketId);
+            th.setTicketId(ticketId);
             th.setStudent(student);
             th.setQuestion(q);
-            th.setScore(null);
+
             session.persist(th);
         }
 
         tx.commit();
         session.close();
 
-        return questions;
+        return new TicketResult(ticketId, questions);
     }
+
 
     public int getLastTicketId() {
         return lastTicketId;
     }
 
-    public void updateScoreAndComment(
+    /*public void updateScoreAndComment(
             int ticketId,
             int questionId,
             int score,
@@ -56,14 +79,22 @@ public class TicketHistoryDAO {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
-        TicketHistory th = session.createQuery(
+        List<TicketHistory> list = session.createQuery(
                         "FROM TicketHistory " +
                                 "WHERE ticketId = :t AND question.id = :q",
-                        TicketHistory.class)
+                        TicketHistory.class
+                )
                 .setParameter("t", ticketId)
                 .setParameter("q", questionId)
-                .getSingleResult();
+                .list();
 
+        if (list.isEmpty()) {
+            tx.rollback();
+            session.close();
+            throw new RuntimeException("Запись TicketHistory не найдена");
+        }
+
+        TicketHistory th = list.get(0);
         th.setScore(score);
         th.setComment(comment);
 
@@ -71,52 +102,100 @@ public class TicketHistoryDAO {
 
         tx.commit();
         session.close();
-    }
+    }*/
 
-    public static List<Object[]> getAnalysisByStudent(int studentId) {
+
+    public static List<AnalysisRow> getAnalysisByStudent(Student student) {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List<Object[]> result = session.createQuery("""
-        SELECT
-            q.id,               \s
-            q.text,             \s
-            COUNT(th.id),       \s
-            AVG(th.score),      \s
-            th.comment          \s
-        FROM TicketHistory th
-        JOIN th.question q
-        WHERE th.student.id = :studentId
-        GROUP BY q.id, q.text, th.comment
-        ORDER BY q.id
-   \s""", Object[].class)
-                .setParameter("studentId", studentId)
-                .getResultList();
+        List<Object[]> rows = session.createQuery(
+                        """
+                        SELECT
+                            q.id,
+                            q.text,
+                            q.topic.name,
+                            q.difficulty,
+                            COUNT(th.id),
+                            AVG(th.score),
+                            th.comment
+                        FROM TicketHistory th
+                        JOIN th.question q
+                        WHERE th.student = :student
+                        GROUP BY q.id, q.text, th.comment, q.topic.name, q.difficulty
+                        ORDER BY q.id
+                        """,
+                        Object[].class
+                )
+                .setParameter("student", student)
+                .list();
 
         session.close();
-        return result;
+
+        return rows.stream()
+                .map(r -> new AnalysisRow(
+                        (Integer) r[0],
+                        (String) r[1],
+                        (String) r[2],
+                        (Integer) r[3],
+                        (Long) r[4],
+                        (Double) r[5],
+                        (String) r[6]
+                ))
+                .toList();
     }
+
 
     public static List<Object[]> getGlobalAnalysis() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List<Object[]> result = session.createQuery("""
+        List<Object[]> rows = session.createQuery("""
         SELECT
             q.id,
             q.text,
+            q.topic.name,
+            q.difficulty,
             COUNT(th.id),
             AVG(th.score)
         FROM TicketHistory th
         JOIN th.question q
-        GROUP BY q.id, q.text
+        GROUP BY q.id, q.text, q.topic.name, q.difficulty
         ORDER BY q.id
-    """, Object[].class)
-                .getResultList();
+    """, Object[].class).list();
+
 
         session.close();
-        return result;
+        return rows;
     }
+
+    public static List<TicketHistory> findByTicketId(int ticketId) {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<TicketHistory> list = session.createQuery(
+                        "FROM TicketHistory WHERE ticketId = :ticketId",
+                        TicketHistory.class
+                )
+                .setParameter("ticketId", ticketId)
+                .list();
+
+        session.close();
+        return list;
+    }
+
+    public static void update(TicketHistory history) {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+
+        session.merge(history);
+
+        tx.commit();
+        session.close();
+    }
+
+
 
 }
 

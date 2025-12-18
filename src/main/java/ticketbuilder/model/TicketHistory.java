@@ -46,6 +46,18 @@ public class TicketHistory {
     public void setScore(Integer score) {
         this.score = score;
     }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public int getScore() {
+        return (score != null) ? score.intValue() : 0;
+    }
+
+    public String getComment() {
+        return comment;
+    }
 }
 
 
