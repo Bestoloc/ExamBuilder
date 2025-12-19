@@ -2,25 +2,160 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="200.0"  prefWidth="300.0" stylesheets="@/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ticketbuilder.controllers.LoginController">
-   <children>
-      <VBox alignment="CENTER" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      
-          <padding>
-              <Insets bottom="20" left="20" right="20" top="20" />
-          </padding>
-      
-          <Label style="-fx-font-size:16px; -fx-font-weight:bold" text="Вход преподавателя" />
-      
-          <TextField fx:id="textLogin" promptText="Логин" />
-          <PasswordField fx:id="txtPassword" promptText="Пароль" />
-      
-          <Button fx:id="btnJoin" onAction="#onLogin" text="Войти" />
-      
-          <Label fx:id="labelError" textFill="red" />
-      
-      </VBox>
-   </children>
+<AnchorPane maxHeight="819.0" maxWidth="536.0" minHeight="819.0" minWidth="536.0" prefHeight="819.0" prefWidth="536.0"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.examsystem.controllers.LoginController">
+    <BorderPane style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);"
+                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0">
+
+        <center>
+            <StackPane>
+                <!-- Главный контейнер -->
+                <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+                    <!-- Верхняя часть с логотипом -->
+                    <VBox alignment="CENTER" spacing="20">
+                        <!-- Логотип -->
+                        <StackPane>
+                            <!-- Внешнее свечение -->
+                            <Circle fill="#3b82f6" radius="55">
+                                <effect>
+                                    <Glow/>
+                                </effect>
+                            </Circle>
+
+                            <!-- Внутренний круг -->
+                            <Circle fill="#1e40af" radius="45">
+                                <effect>
+                                    <InnerShadow color="#00000080" radius="5"/>
+                                </effect>
+                            </Circle>
+
+                            <!-- Иконка -->
+                            <Text style="-fx-font-size: 32;" text="📚"/>
+                        </StackPane>
+
+                        <!-- Текстовый блок -->
+                        <VBox alignment="CENTER" spacing="8">
+                            <Text fill="#f1f5f9" style="-fx-font-size: 32; -fx-font-weight: bold;">
+                                ExamPro System
+                            </Text>
+                            <Text fill="#94a3b8" style="-fx-font-size: 14;">
+                                Конструктор экзаменационных билетов
+                            </Text>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Карточка формы входа -->
+                    <StackPane>
+                        <!-- Фон карточки -->
+                        <Rectangle arcHeight="25" arcWidth="25" fill="#1e293b" height="340" width="420">
+                            <effect>
+                                <DropShadow color="#0000004d" offsetY="10" radius="25"/>
+                            </effect>
+                        </Rectangle>
+
+                        <!-- Градиентная обводка -->
+                        <Rectangle arcHeight="25" arcWidth="25" fill="transparent" height="340" stroke="#3b82f633"
+                                   width="420"/>
+
+                        <!-- Содержимое формы -->
+                        <VBox alignment="CENTER" spacing="25" style="-fx-padding: 40;">
+                            <!-- Заголовок формы -->
+                            <VBox alignment="CENTER" spacing="5">
+                                <Text fill="#f8fafc" style="-fx-font-size: 24; -fx-font-weight: bold;">
+                                    Вход в систему
+                                </Text>
+                                <Text fill="#cbd5e1" style="-fx-font-size: 12;">
+                                    Введите учетные данные преподавателя
+                                </Text>
+                            </VBox>
+
+                            <!-- Поля ввода -->
+                            <VBox prefWidth="300" spacing="20">
+                                <!-- Поле логина -->
+                                <VBox spacing="8">
+                                    <Label style="-fx-font-size: 13; -fx-font-weight: bold;" text="Логин"
+                                           textFill="#e2e8f0"/>
+                                    <TextField fx:id="usernameField" promptText="Ваш логин"
+                                               style="-fx-background-color: #ffffff12;                                                  -fx-background-radius: 10;                                                  -fx-border-color: #3b82f64d;                                                  -fx-border-radius: 10;                                                  -fx-border-width: 1.5;                                                  -fx-padding: 12 15;                                                  -fx-text-fill: #f1f5f9;                                                  -fx-prompt-text-fill: #94a3b8;                                                  -fx-font-size: 14;">
+                                        <effect>
+                                            <InnerShadow color="#00000033" radius="2"/>
+                                        </effect>
+                                    </TextField>
+                                </VBox>
+
+                                <!-- Поле пароля -->
+                                <VBox spacing="8">
+                                    <Label style="-fx-font-size: 13; -fx-font-weight: bold;" text="Пароль"
+                                           textFill="#e2e8f0"/>
+                                    <PasswordField fx:id="passwordField" promptText="Ваш пароль"
+                                                   style="-fx-background-color: #ffffff12;                                                     -fx-background-radius: 10;                                                     -fx-border-color: #3b82f64d;                                                     -fx-border-radius: 10;                                                     -fx-border-width: 1.5;                                                     -fx-padding: 12 15;                                                     -fx-text-fill: #f1f5f9;                                                     -fx-prompt-text-fill: #94a3b8;                                                     -fx-font-size: 14;">
+                                        <effect>
+                                            <InnerShadow color="#00000033" radius="2"/>
+                                        </effect>
+                                    </PasswordField>
+                                </VBox>
+
+                                <!-- Кнопки -->
+                                <HBox alignment="CENTER" spacing="15">
+                                    <Button fx:id="clearButton" onAction="#handleClear"
+                                            style="-fx-background-color: #ffffff1a;                                               -fx-text-fill: #cbd5e1;                                               -fx-font-weight: bold;                                               -fx-background-radius: 10;                                               -fx-padding: 12 30;                                               -fx-cursor: hand;                                               -fx-font-size: 13;"
+                                            text="Очистить">
+                                        <effect>
+                                            <DropShadow color="#00000033" offsetX="1" offsetY="1" radius="3"/>
+                                        </effect>
+                                    </Button>
+
+                                    <Button fx:id="loginButton" onAction="#handleLogin"
+                                            style="-fx-background-color: #3b82f6;                                               -fx-text-fill: white;                                               -fx-font-weight: bold;                                               -fx-background-radius: 10;                                               -fx-padding: 12 40;                                               -fx-cursor: hand;                                               -fx-font-size: 13;"
+                                            text="Войти">
+                                        <effect>
+                                            <DropShadow color="#3b82f666" offsetX="2" offsetY="2" radius="5"/>
+                                        </effect>
+                                    </Button>
+                                </HBox>
+
+                                <!-- Сообщение об ошибке -->
+                                <Label fx:id="errorLabel" alignment="CENTER" style="-fx-font-size: 12;"
+                                       textFill="#fca5a5" visible="false" wrapText="true">
+                                    <padding>
+                                        <Insets top="10"/>
+                                    </padding>
+                                </Label>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+
+                    <!-- Нижняя информационная панель -->
+                    <VBox alignment="CENTER" spacing="10">
+                        <HBox alignment="CENTER" spacing="20">
+                            <Text fill="#64748b" style="-fx-font-size: 11;">
+                                🔒 Безопасный вход
+                            </Text>
+                            <Circle fill="#475569" radius="2"/>
+                            <Text fill="#64748b" style="-fx-font-size: 11;">
+                                📊 Аналитика результатов
+                            </Text>
+                            <Circle fill="#475569" radius="2"/>
+                            <Text fill="#64748b" style="-fx-font-size: 11;">
+                                🎯 Автогенерация билетов
+                            </Text>
+                        </HBox>
+
+                        <Text fill="#94a3b8" style="-fx-font-size: 12;"
+                              text="Система экзаменационных билетов © 2025 • Академическая версия">
+                            Система экзаменационных билетов © 2024 • Академическая версия
+                        </Text>
+                    </VBox>
+                </VBox>
+            </StackPane>
+        </center>
+
+    </BorderPane>
 </AnchorPane>

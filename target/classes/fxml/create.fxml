@@ -1,44 +1,229 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="450.0" prefWidth="650.0" stylesheets="@/style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ticketbuilder.controllers.CreateController">
-   <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <columnConstraints>
-            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="11.0" />
-            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="289.0" minWidth="0.0" prefWidth="177.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="8.0" prefWidth="23.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="225.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="257.0" minWidth="10.0" prefWidth="11.0" />
-            <ColumnConstraints maxWidth="152.0" minWidth="0.0" />
-            <ColumnConstraints fillWidth="false" maxWidth="10.0" minWidth="0.0" prefWidth="0.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints maxHeight="69.0" minHeight="10.0" prefHeight="56.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="365.0" minHeight="10.0" prefHeight="342.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="52.0" minHeight="10.0" prefHeight="56.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-         <children>
-      
-                <Button fx:id="btnGenerate" onAction="#onGenerate" text="Сгенерировать билет" GridPane.columnIndex="1" />
-             <ComboBox fx:id="cmbStudents" prefHeight="26.0" prefWidth="186.0" promptText="Выберите ученика" GridPane.columnIndex="4" GridPane.halignment="RIGHT" />
-      
-                <TextArea fx:id="txtTicket" prefHeight="355.0" prefWidth="631.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
-            <Button fx:id="btnBack" onAction="#onBack" text="Назад" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ComboBox fx:id="cmbTopics" layoutX="451.0" layoutY="27.0" prefHeight="26.0" prefWidth="186.0" promptText="Выберите тему" GridPane.columnIndex="3" GridPane.halignment="RIGHT" />
-             <TableView fx:id="tableTicket" prefHeight="342.0" prefWidth="639.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1">
-                 <columns>
-                     <TableColumn fx:id="colQuestion" prefWidth="287.0" text="Вопрос" />
-                     <TableColumn fx:id="colDifficulty" prefWidth="90.0" text="Сложность" />
-                     <TableColumn fx:id="colScore" prefWidth="96.0" text="Оценка" />
-                     <TableColumn fx:id="colComment" prefWidth="153.0" text="Комментарий" />
-                 </columns>
-             </TableView>
-            <Button mnemonicParsing="false" onAction="#onSaveScores" text="Сохранить оценки" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-         </children>
-      </GridPane>
-   </children>
-</AnchorPane>
+<BorderPane style="-fx-background-color: #0f172a; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.examsystem.controllers.CreateTicketController" stylesheets="@/style.css">
+
+    <top>
+        <VBox spacing="0">
+            <!-- Верхняя панель -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #1e293b; -fx-padding: 20 30;">
+                <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;                               -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand;" text="← Назад" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Text fill="#f1f5f9" style="-fx-font-size: 20; -fx-font-weight: bold;">
+                    📝 Создание билета
+                </Text>
+
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <!-- Информационная строка -->
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #3b82f6; -fx-padding: 10 30;">
+                <Text fill="white" style="-fx-font-size: 12;">
+                    ⚡ Автоматическая генерация экзаменационных билетов по заданным параметрам
+                </Text>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 30;">
+
+                <!-- Параметры билета -->
+                <VBox spacing="25" style="-fx-background-color: #1e293b; -fx-background-radius: 12;                                          -fx-padding: 30; -fx-border-color: #334155;                                          -fx-border-width: 1; -fx-border-radius: 12;">
+                    <VBox spacing="10">
+                        <Text fill="#f1f5f9" style="-fx-font-size: 18; -fx-font-weight: bold;">
+                            🎯 Параметры билета
+                        </Text>
+                        <Text fill="#94a3b8" style="-fx-font-size: 13;">
+                            Настройте параметры для генерации экзаменационных билетов
+                        </Text>
+                    </VBox>
+
+                    <!-- Форма параметров -->
+                    <GridPane hgap="25" style="-fx-padding: 10;" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="200" />
+                            <ColumnConstraints prefWidth="350" />
+                        </columnConstraints>
+
+                        <!-- Предмет -->
+                        <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;" text="Предмет" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <ComboBox fx:id="subjectComboBox" promptText="Выберите предмет" style="-fx-background-color: #0f172a; -fx-background-radius: 8; -fx-border-color: #475569; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 12; -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <!-- Тема -->
+                        <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;" text="Тема" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="topicComboBox" promptText="Выберите тему" style="-fx-background-color: #0f172a; -fx-background-radius: 8;                                        -fx-border-color: #475569; -fx-border-radius: 8;                                        -fx-border-width: 1; -fx-padding: 12;                                        -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <!-- Сложность -->
+                        <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;" text="Сложность" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="difficultyComboBox" promptText="Выберите сложность" style="-fx-background-color: #0f172a; -fx-background-radius: 8;                                        -fx-border-color: #475569; -fx-border-radius: 8;                                        -fx-border-width: 1; -fx-padding: 12;                                        -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Легкий" />
+                                    <String fx:value="Средний" />
+                                    <String fx:value="Сложный" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+
+                        <!-- Группа студентов -->
+                        <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;" text="Группа" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="groupComboBox" promptText="Выберите группу" style="-fx-background-color: #0f172a; -fx-background-radius: 8;                                        -fx-border-color: #475569; -fx-border-radius: 8;                                        -fx-border-width: 1; -fx-padding: 12;                                        -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <!-- Количество вопросов -->
+                        <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;" text="Количество вопросов" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <HBox alignment="CENTER_LEFT" spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <Spinner fx:id="questionCountSpinner" initialValue="3" max="5" min="3" style="-fx-background-color: #0f172a; -fx-background-radius: 8;                                           -fx-border-color: #475569; -fx-border-radius: 8;                                           -fx-border-width: 1;" />
+                            <Text style="-fx-font-size: 13; -fx-fill: #94a3b8;">
+                                (от 1 до 3)
+                            </Text>
+                        </HBox>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+
+                    <!-- Кнопки -->
+                    <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20 0 0 0;">
+                        <Button onAction="#handleShowStudents" style="-fx-background-color: #475569; -fx-text-fill: white;
+                        -fx-font-weight: bold; -fx-background-radius: 8;
+                        -fx-padding: 12 25; -fx-cursor: hand;" text="📋 Показать студентов">
+                        </Button>
+
+                        <Button fx:id="generateButton" onAction="#handleGenerateTicket" style="-fx-background-color: #10b981; -fx-text-fill: white;                                       -fx-font-weight: bold; -fx-background-radius: 8;                                       -fx-padding: 12 30; -fx-cursor: hand;" text="🚀 Сгенерировать билет">
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- Студенты (скрытый раздел) -->
+                <VBox fx:id="studentsSection" spacing="20" visible="false">
+                    <VBox style="-fx-background-color: #1e293b; -fx-background-radius: 12;
+                    -fx-padding: 25; -fx-border-color: #334155;
+                    -fx-border-width: 1; -fx-border-radius: 12;">
+                        <VBox spacing="10">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Text fill="#f1f5f9" style="-fx-font-size: 18; -fx-font-weight: bold;">
+                                    👥 Студенты группы
+                                </Text>
+                                <Text fill="#94a3b8" style="-fx-font-size: 13;">
+                                    Выберите студентов для создания билетов
+                                </Text>
+                            </HBox>
+
+                            <!-- Таблица студентов -->
+                            <TableView fx:id="studentsTable" style="-fx-background-color: #1e293b;
+                            -fx-text-fill: #e2e8f0;
+                            -fx-border-color: #475569;
+                            -fx-border-radius: 8; -fx-border-width: 1;">
+                                <columns>
+                                    <TableColumn prefWidth="50" text=" ">
+                                        <cellValueFactory>
+                                            <PropertyValueFactory property="selected" />
+                                        </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="250" text="ФИО">
+                                        <cellValueFactory>
+                                            <PropertyValueFactory property="fullName" />
+                                        </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="100" text="Группа">
+                                        <cellValueFactory>
+                                            <PropertyValueFactory property="groupName" />
+                                        </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="120" text="Код">
+                                        <cellValueFactory>
+                                            <PropertyValueFactory property="studentCode" />
+                                        </cellValueFactory>
+                                    </TableColumn>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Сгенерированные билеты -->
+                <VBox spacing="20">
+                    <VBox style="-fx-background-color: #1e293b; -fx-background-radius: 12;                                -fx-padding: 25; -fx-border-color: #334155;                                -fx-border-width: 1; -fx-border-radius: 12;">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <VBox spacing="5">
+                                <Text fill="#f1f5f9" style="-fx-font-size: 18; -fx-font-weight: bold;">
+                                    📄 Сгенерированные билеты
+                                </Text>
+                                <Text fill="#94a3b8" style="-fx-font-size: 13;">
+                                    Оцените ответы и добавьте комментарии
+                                </Text>
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <Button onAction="#handleSaveScores" style="-fx-background-color: #f59e0b; -fx-text-fill: white;                                           -fx-font-weight: bold; -fx-background-radius: 8;                                           -fx-padding: 12 25; -fx-cursor: hand;" text="💾 Сохранить оценки">
+                            </Button>
+                        </HBox>
+
+                        <!-- Таблица билетов -->
+                        <TableView fx:id="ticketsTable" style="-fx-background-color: #1e293b;
+                        -fx-text-fill: #e2e8f0;
+                        -fx-border-color: #475569;
+                        -fx-border-radius: 8; -fx-border-width: 1;">
+                            <columns>
+                                <TableColumn prefWidth="50" text="№">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="ticketNumber" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="180" text="Студент">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="studentName" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="300" text="Вопрос">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="questionText" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="130" text="Тема">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="topic" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="90" text="Сложность">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="difficulty" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="70" text="Оценка">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="score" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="200" text="Комментарий">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="comment" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
