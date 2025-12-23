@@ -59,7 +59,7 @@ public class LoginController {
                 Stage mainStage = new Stage();
                 mainStage.setScene(new Scene(root));
                 mainStage.setMaximized(true);
-                mainStage.setTitle("Конструктор экзаменационных билетов");
+                mainStage.setTitle("Главное окно");
                 mainStage.show();
 
             } catch (IOException e) {

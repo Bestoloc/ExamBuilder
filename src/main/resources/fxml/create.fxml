@@ -172,7 +172,10 @@
 
                             <Region HBox.hgrow="ALWAYS" />
 
-                            <Button onAction="#handleSaveScores" style="-fx-background-color: #f59e0b; -fx-text-fill: white;                                           -fx-font-weight: bold; -fx-background-radius: 8;                                           -fx-padding: 12 25; -fx-cursor: hand;" text="💾 Сохранить оценки">
+                            <Button onAction="#handleSaveScores"
+                                    style="-fx-background-color: #f59e0b; -fx-text-fill: white;
+                                    -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 25;
+                                    -fx-cursor: hand;" text="💾 Сохранить оценки">
                             </Button>
                         </HBox>
 

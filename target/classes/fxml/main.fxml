@@ -289,7 +289,7 @@
         <StackPane style="-fx-background-color: #0f172a; -fx-padding: 15;">
             <HBox alignment="CENTER" spacing="10">
                 <Text style="-fx-font-size: 12; -fx-fill: #64748b;">
-                    © 2024 ExamPro System • Академическая версия 1.0
+                    © 2025 ExamPro System • Академическая версия 1.0
                 </Text>
                 <Text style="-fx-font-size: 12; -fx-fill: #475569;">•</Text>
                 <Text style="-fx-font-size: 12; -fx-fill: #64748b;">

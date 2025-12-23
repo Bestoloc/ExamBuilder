@@ -8,8 +8,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import java.util.List;
 public class AnalysisController {
 
     @FXML private TableView<AnalysisWrapper> analysisTable;
+    @FXML private Button BtnRedact;
+    @FXML private Button BtnDelete;
     @FXML
     private TableColumn<AnalysisWrapper, String> questionTextColumn;
     @FXML
@@ -67,7 +72,6 @@ public class AnalysisController {
         private Question question;
 
 
-
         public AnalysisWrapper(Question question,String topicName, long usageCount, Double avgScore,
                                Double minScore, Double maxScore) {
             this.question = question;
@@ -79,8 +83,6 @@ public class AnalysisController {
             this.avgScore.set(avgScore != null ? avgScore : 0);
             this.minScore.set(minScore != null ? minScore : 0);
             this.maxScore.set(maxScore != null ? maxScore : 0);
-
-
 
             // Определить статус вопроса
             if (avgScore != null) {
@@ -96,6 +98,8 @@ public class AnalysisController {
             } else {
                 this.status.set("Не использовался");
             }
+
+
         }
         // с 5 параметрами
         public AnalysisWrapper(Question question, long usageCount, Double avgScore,
@@ -144,6 +148,20 @@ public class AnalysisController {
 
         public Question getQuestion() { return question; }
 
+    }
+
+    private void updateStatusForQuestion(AnalysisWrapper wrapper) {
+        double avgScore = wrapper.getAvgScore();
+
+        if (avgScore >= 5.0) {
+            wrapper.setStatus("Отлично");
+        } else if (avgScore >= 4.0) {
+            wrapper.setStatus("Нормально");
+        } else if (avgScore >= 3.0) {
+            wrapper.setStatus("Требует внимания");
+        } else {
+            wrapper.setStatus("Переписать!");
+        }
     }
 
 
@@ -230,6 +248,84 @@ public class AnalysisController {
         analysisTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // Убедитесь, что настройка привязки данных идет ПОСЛЕ cellFactory
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
+        setupTableEditing();
+    }
+
+    private void setupTableEditing() {
+        // Включить редактирование для таблицы
+        analysisTable.setEditable(true);
+
+        // Настроить редактируемые ячейки для каждого столбца
+
+        // 1. Текст вопроса - редактируемый TextField
+        questionTextColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        questionTextColumn.setOnEditCommit(event -> {
+            AnalysisWrapper wrapper = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            wrapper.setQuestionText(event.getNewValue());
+        });
+
+        // 2. Тема - редактируемый TextField
+        topicColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        topicColumn.setOnEditCommit(event -> {
+            AnalysisWrapper wrapper = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            wrapper.setTopic(event.getNewValue());
+        });
+
+        // 3. Сложность - ComboBox с вариантами
+        difficultyColumn.setCellFactory(column -> {
+            return new TableCell<AnalysisWrapper, String>() {
+                private final ComboBox<String> comboBox = new ComboBox<>();
+
+                {
+                    comboBox.getItems().addAll("Легкий", "Средний", "Сложный");
+                    comboBox.setOnAction(e -> {
+                        AnalysisWrapper wrapper = getTableView().getItems().get(getIndex());
+                        wrapper.setDifficulty(comboBox.getValue());
+
+                        // Обновить статус на основе новой сложности
+                        updateStatusForQuestion(wrapper);
+                    });
+                }
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        comboBox.setValue(item);
+                        setGraphic(comboBox);
+                        setText(null);
+                    }
+                }
+            };
+        });
+
+        // 4. Средний балл - редактируемый TextField (только для отладки)
+        avgScoreColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        avgScoreColumn.setOnEditCommit(event -> {
+            AnalysisWrapper wrapper = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            wrapper.setAvgScore(event.getNewValue());
+            updateStatusForQuestion(wrapper);
+        });
+
+        // Настройка кнопок
+        BtnRedact.setOnAction(event -> handleEditQuestion());
+        BtnDelete.setOnAction(event -> handleDeleteQuestion());
+
+        // Делаем кнопки неактивными, если ничего не выбрано
+        BtnRedact.setDisable(true);
+        BtnDelete.setDisable(true);
+
+        // Активируем кнопки при выборе строки
+        analysisTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSelection, newSelection) -> {
+                    boolean hasSelection = newSelection != null;
+                    BtnRedact.setDisable(!hasSelection);
+                    BtnDelete.setDisable(!hasSelection);
+                });
     }
 
     private void initializeData() {
@@ -442,5 +538,204 @@ public class AnalysisController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleEditQuestion() {
+        AnalysisWrapper selectedWrapper = analysisTable.getSelectionModel().getSelectedItem();
+
+        if (selectedWrapper == null) {
+            showAlert("Ошибка", "Выберите вопрос для редактирования");
+            return;
+        }
+
+        // 1. Получаем оригинальный объект Question из wrapper
+        Question question = selectedWrapper.getQuestion();
+
+        if (question == null) {
+            showAlert("Ошибка", "Не удалось получить данные вопроса");
+            return;
+        }
+
+        // 2. Обновляем поля вопроса из wrapper
+        question.setText(selectedWrapper.getQuestionText());
+
+        // Обновляем сложность (конвертация из строки в число)
+        String difficultyStr = selectedWrapper.getDifficulty();
+        int newDifficulty = convertDifficultyStringToInt(difficultyStr);
+        question.setDifficulty(newDifficulty);
+
+        // 3. Обновляем тему (требует поиска существующей или создания новой)
+        updateTopicForQuestion(question, selectedWrapper.getTopic());
+
+        // 4. Сохраняем изменения в базе данных
+        saveQuestionChanges(question);
+
+        // 5. Обновляем статус в wrapper
+        updateStatusForQuestion(selectedWrapper);
+
+        // 6. Обновляем отображение таблицы
+        analysisTable.refresh();
+
+        showAlert("Успех", "Вопрос успешно отредактирован!");
+    }
+
+    private int convertDifficultyStringToInt(String difficultyStr) {
+        switch (difficultyStr) {
+            case "Легкий": return 1;
+            case "Средний": return 2;
+            case "Сложный": return 3;
+            default: return 2; // По умолчанию средний
+        }
+    }
+
+    private void updateTopicForQuestion(Question question, String topicName) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            try {
+                // Ищем тему по имени и предмету
+                Topic existingTopic = session.createQuery(
+                                "FROM Topic t WHERE t.name = :name AND t.subject.id = :subjectId", Topic.class)
+                        .setParameter("name", topicName)
+                        .setParameter("subjectId", question.getSubject().getId())
+                        .uniqueResult();
+
+                if (existingTopic != null) {
+                    // Тема существует, используем её
+                    question.setTopic(existingTopic);
+                } else {
+                    // Создаем новую тему
+                    Topic newTopic = new Topic(question.getSubject(), topicName, "");
+                    session.save(newTopic);
+                    question.setTopic(newTopic);
+                }
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
+    private void saveQuestionChanges(Question question) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(question);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            showAlert("Ошибка", "Не удалось сохранить изменения в базе данных: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteQuestion() {
+        AnalysisWrapper selectedWrapper = analysisTable.getSelectionModel().getSelectedItem();
+
+        if (selectedWrapper == null) {
+            showAlert("Ошибка", "Выберите вопрос для удаления");
+            return;
+        }
+
+        // Подтверждение удаления
+        Alert confirmation = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "Вы уверены, что хотите удалить этот вопрос?\n" +
+                        "Это действие нельзя отменить.",
+                ButtonType.YES, ButtonType.NO
+        );
+        confirmation.setTitle("Подтверждение удаления");
+        confirmation.setHeaderText(null);
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                deleteQuestionFromDatabase(selectedWrapper);
+            }
+        });
+    }
+
+    private void deleteQuestionFromDatabase(AnalysisWrapper wrapper) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            // Получаем полный объект Question
+            Question question = session.get(Question.class, wrapper.getQuestionId());
+
+            if (question == null) {
+                showAlert("Ошибка", "Вопрос не найден в базе данных");
+                return;
+            }
+
+            // Проверяем, не используется ли вопрос в билетах
+            Long usageCount = session.createQuery(
+                            "SELECT COUNT(*) FROM TicketQuestion tq WHERE tq.question = :question", Long.class)
+                    .setParameter("question", question)
+                    .uniqueResult();
+
+            if (usageCount > 0) {
+                // Вопрос используется в билетах, спрашиваем как поступить
+                Alert usageAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                usageAlert.setTitle("Вопрос используется");
+                usageAlert.setHeaderText("Этот вопрос используется в " + usageCount + " билетах");
+                usageAlert.setContentText("Что вы хотите сделать?\n" +
+                        "1. Удалить из всех билетов и удалить вопрос\n" +
+                        "2. Отменить удаление");
+
+                ButtonType deleteAllButton = new ButtonType("Удалить все");
+                ButtonType cancelButton = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+                usageAlert.getButtonTypes().setAll(deleteAllButton, cancelButton);
+
+                Transaction finalTransaction = transaction;
+                usageAlert.showAndWait().ifPresent(response -> {
+                    if (response == deleteAllButton) {
+                        // Удаляем все связи с билетами
+                        session.createQuery("DELETE FROM TicketQuestion tq WHERE tq.question = :question")
+                                .setParameter("question", question)
+                                .executeUpdate();
+
+                        // Удаляем все оценки по этому вопросу
+                        session.createQuery("DELETE FROM QuestionScore qs WHERE qs.question = :question")
+                                .setParameter("question", question)
+                                .executeUpdate();
+
+                        // Удаляем сам вопрос
+                        session.delete(question);
+                        finalTransaction.commit();
+
+                        // Удаляем из таблицы
+                        analysisData.remove(wrapper);
+                        showAlert("Успех", "Вопрос и все связанные данные удалены");
+                    }
+                });
+            } else {
+                // Вопрос не используется, просто удаляем
+                // Сначала удаляем все оценки по этому вопросу
+                session.createQuery("DELETE FROM QuestionScore qs WHERE qs.question = :question")
+                        .setParameter("question", question)
+                        .executeUpdate();
+
+                // Удаляем сам вопрос
+                session.delete(question);
+                transaction.commit();
+
+                // Удаляем из таблицы
+                analysisData.remove(wrapper);
+                showAlert("Успех", "Вопрос успешно удален");
+            }
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            showAlert("Ошибка", "Не удалось удалить вопрос: " + e.getMessage());
+        }
     }
 }

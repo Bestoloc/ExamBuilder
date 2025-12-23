@@ -12,7 +12,7 @@
             style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);" stylesheets="@/style.css">
 
     <top>
-        <VBox spacing="0">
+        <VBox>
             <!-- Шапка -->
             <StackPane style="-fx-background-color: linear-gradient(to right, #3b82f6, #2563eb);
                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);">
@@ -29,7 +29,7 @@
 
                     <Region HBox.hgrow="ALWAYS"/>
 
-                    <HBox alignment="CENTER" spacing="12" >
+                    <HBox alignment="CENTER" spacing="12">
                         <Label text="➕" style="-fx-text-fill: white; -fx-font-size: 20;"/>
                         <Label text="Добавление вопроса"
                                style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 20;"/>
@@ -51,7 +51,7 @@
                     <Rectangle width="900" arcWidth="20" arcHeight="20"
                                fill="#1e293b">
                         <effect>
-                            <DropShadow radius="20" color="rgba(0,0,0,0.15)" offsetX="0" offsetY="5"/>
+                            <DropShadow radius="20" color="rgba(0,0,0,0.15)" offsetY="5"/>
                         </effect>
                     </Rectangle>
 
@@ -74,36 +74,59 @@
                         <GridPane hgap="20" vgap="18">
                             <columnConstraints>
                                 <ColumnConstraints prefWidth="180"/>
-                                <ColumnConstraints prefWidth="400"/>
+                                <ColumnConstraints prefWidth="300"/>
+                                <ColumnConstraints prefWidth="40"/>
                             </columnConstraints>
 
                             <!-- Предмет -->
                             <Label text="Предмет *" GridPane.rowIndex="0" GridPane.columnIndex="0"
                                    style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;"/>
-                            <ComboBox fx:id="subjectComboBox" promptText="Выберите предмет"
-                                      GridPane.rowIndex="0" GridPane.columnIndex="1"
-                                      style="-fx-background-color: #0f172a; -fx-background-radius: 8;
-                                      -fx-border-color: #475569; -fx-border-radius: 8;
-                                      -fx-border-width: 1; -fx-padding: 12; -fx-text-fill: #f1f5f9;
-                                      -fx-prompt-text-fill: #64748b;">
-                            </ComboBox>
+                            <HBox GridPane.rowIndex="0" GridPane.columnIndex="1" spacing="10">
+                                <ComboBox fx:id="subjectComboBox" promptText="Выберите предмет"
+                                          HBox.hgrow="ALWAYS"
+                                          style="-fx-background-color: #0f172a; -fx-background-radius: 8;
+                                          -fx-border-color: #475569; -fx-border-radius: 8;
+                                          -fx-border-width: 1; -fx-padding: 12; -fx-text-fill: #f1f5f9;
+                                          -fx-prompt-text-fill: #64748b;">
+                                </ComboBox>
+                                <Button text="➕" fx:id="btnAddSubject"
+                                        style="-fx-background-color: #10b981; -fx-text-fill: white;
+                                              -fx-font-weight: bold; -fx-background-radius: 8;
+                                              -fx-padding: 12 12; -fx-cursor: hand; -fx-min-width: 40;"
+                                        onAction="#handleAddSubject">
+                                    <effect>
+                                        <DropShadow radius="3" offsetX="2" offsetY="2" color="rgba(16,185,129,0.3)"/>
+                                    </effect>
+                                </Button>
+                            </HBox>
 
                             <!-- Тема -->
                             <Label text="Тема *" GridPane.rowIndex="1" GridPane.columnIndex="0"
                                    style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;"/>
-                            <ComboBox fx:id="topicComboBox" promptText="Выберите тему"
-                                      GridPane.rowIndex="1" GridPane.columnIndex="1"
-                                      style="-fx-background-color: #0f172a; -fx-background-radius: 8;
-                                      -fx-border-color: #475569; -fx-border-radius: 8;
-                                      -fx-border-width: 1; -fx-padding: 12;
-                                      -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;">
-                            </ComboBox>
+                            <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10">
+                                <ComboBox fx:id="topicComboBox" promptText="Выберите тему"
+                                          HBox.hgrow="ALWAYS"
+                                          style="-fx-background-color: #0f172a; -fx-background-radius: 8;
+                                          -fx-border-color: #475569; -fx-border-radius: 8;
+                                          -fx-border-width: 1; -fx-padding: 12;
+                                          -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;">
+                                </ComboBox>
+                                <Button text="➕" fx:id="btnAddTopic"
+                                        style="-fx-background-color: #f59e0b; -fx-text-fill: white;
+                                              -fx-font-weight: bold; -fx-background-radius: 8;
+                                              -fx-padding: 12 12; -fx-cursor: hand; -fx-min-width: 40;"
+                                        onAction="#handleAddTopic">
+                                    <effect>
+                                        <DropShadow radius="3" offsetX="2" offsetY="2" color="rgba(245,158,11,0.3)"/>
+                                    </effect>
+                                </Button>
+                            </HBox>
 
                             <!-- Тип вопроса -->
                             <Label text="Тип вопроса *" GridPane.rowIndex="2" GridPane.columnIndex="0"
                                    style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;"/>
                             <ComboBox fx:id="typeComboBox" promptText="Выберите тип"
-                                      GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                      GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2"
                                       style="-fx-background-color: #0f172a; -fx-background-radius: 8;
                                       -fx-border-color: #475569; -fx-border-radius: 8;
                                       -fx-border-width: 1; -fx-padding: 12; -fx-text-fill: #f1f5f9;
@@ -121,7 +144,7 @@
                             <!-- Сложность -->
                             <Label text="Сложность *" GridPane.rowIndex="3" GridPane.columnIndex="0"
                                    style="-fx-text-fill: #e2e8f0; -fx-font-size: 14; -fx-font-weight: bold;"/>
-                            <HBox spacing="20" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                            <HBox spacing="20" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                 <fx:define>
                                     <ToggleGroup fx:id="difficultyGroup"/>
                                 </fx:define>
@@ -197,10 +220,10 @@
 
                 <!-- Предпросмотр -->
                 <StackPane>
-                    <Rectangle arcWidth="15" arcHeight="15"
+                    <Rectangle arcWidth="15" arcHeight="15" width="900"
                                fill="#1e293b">
                         <effect>
-                            <DropShadow radius="15" color="rgba(0,0,0,0.15)" offsetX="0" offsetY="5"/>
+                            <DropShadow radius="15" color="rgba(0,0,0,0.15)" offsetY="5"/>
                         </effect>
                     </Rectangle>
                     <VBox spacing="15" style="-fx-padding: 25;">

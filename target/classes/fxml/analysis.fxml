@@ -63,7 +63,8 @@
                         <Label style="-fx-text-fill: #e2e8f0; -fx-font-size: 14;" text="Студент" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <ComboBox fx:id="studentComboBox" promptText="Все студенты" style="-fx-background-color: #0f172a; -fx-background-radius: 8;                         -fx-border-color: #475569; -fx-border-radius: 8;                         -fx-border-width: 1; -fx-padding: 10;                         -fx-text-fill: #f1f5f9; -fx-prompt-text-fill: #64748b;" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         </ComboBox>
-                        <Button onAction="#handleShowStudentStats" prefHeight="37.0" prefWidth="174.0" style="-fx-background-color: #475569; -fx-text-fill: white;                         -fx-font-weight: bold; -fx-background-radius: 8;                         -fx-padding: 10 15; -fx-cursor: hand;" text="Показать статистику" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                        <Button onAction="#handleShowStudentStats" prefHeight="37.0" prefWidth="174.0"
+                                style="-fx-background-color: #475569; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 15; -fx-cursor: hand;" text="Показать статистику" GridPane.columnIndex="2" GridPane.rowIndex="0">
                         </Button>
 
                         <!-- Предмет -->
@@ -139,6 +140,14 @@
                                 Подробная информация по каждому вопросу
                             </Text>
                         </VBox>
+                  <Button mnemonicParsing="false" fx:id="BtnRedact" text="Редактировать" translateX="20.0"
+                          style="-fx-background-color: #f59e0b; -fx-text-fill: white;
+                          -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 25;
+                          -fx-cursor: hand;" onAction="#handleEditQuestion"/>
+                  <Button mnemonicParsing="false" fx:id="BtnDelete" text="Удалить" translateX="40.0"
+                          style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                          -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 25;
+                          -fx-cursor: hand;" onAction="#handleDeleteQuestion"/>
 
                         <Region HBox.hgrow="ALWAYS" />
                     </HBox>
@@ -146,37 +155,37 @@
                     <!-- Таблица анализа -->
                     <TableView fx:id="analysisTable" style="-fx-background-color: #1e293b; -fx-background-radius: 8;                                      -fx-border-color: #475569; -fx-border-radius: 8;                                      -fx-border-width: 1;">
                         <columns>
-                            <TableColumn prefWidth="50" text="№">
+                            <TableColumn prefWidth="50" text="№" fx:id="questionIdColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="questionId" />
                                 </cellValueFactory>
-                            </TableColumn>
-                            <TableColumn prefWidth="300" text="Вопрос">
+                            </TableColumn >
+                            <TableColumn prefWidth="300" text="Вопрос" fx:id="questionTextColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="questionText" />
                                 </cellValueFactory>
                             </TableColumn>
-                            <TableColumn prefWidth="150" text="Тема">
+                            <TableColumn prefWidth="150" text="Тема" fx:id="topicColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="topic" />
                                 </cellValueFactory>
                             </TableColumn>
-                            <TableColumn prefWidth="100" text="Сложность">
+                            <TableColumn prefWidth="100" text="Сложность" fx:id="difficultyColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="difficulty" />
                                 </cellValueFactory>
                             </TableColumn>
-                            <TableColumn prefWidth="100" text="Использован">
+                            <TableColumn prefWidth="100" text="Использован" fx:id="usageCountColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="usageCount" />
                                 </cellValueFactory>
                             </TableColumn>
-                            <TableColumn prefWidth="80" text="Ср. балл">
+                            <TableColumn prefWidth="80" text="Ср. балл" fx:id="avgScoreColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="avgScore" />
                                 </cellValueFactory>
                             </TableColumn>
-                            <TableColumn prefWidth="120" text="Статус">
+                            <TableColumn prefWidth="120" text="Статус" fx:id="statusColumn">
                                 <cellValueFactory>
                                     <PropertyValueFactory property="status" />
                                 </cellValueFactory>
