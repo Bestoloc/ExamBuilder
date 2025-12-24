@@ -8,12 +8,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Optional;
 
 public class MainController {
 
+    public Button btnExit;
     @FXML private Label welcomeLabel;
     @FXML private Label questionCountLabel;
     @FXML private Label ticketCountLabel;
@@ -125,18 +127,60 @@ public class MainController {
 
     @FXML
     private void handleLogout() {
-        Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-        stage.close();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
+        // Настройка диалога
+        alert.setTitle("Выход из системы");
+        alert.setHeaderText("⚠️ Подтверждение выхода");
+        alert.setContentText("Вы уверены, что хотите выйти из системы?\n\n" +
+                "• Все несохраненные изменения будут потеряны\n" +
+                "• Для повторного входа потребуется авторизация");
+
+        // Свои кнопки с иконками
+        ButtonType yesButton = new ButtonType("✅ Выйти", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("❌ Отмена", ButtonBar.ButtonData.NO);
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        // Получить Stage для кастомизации
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+
+        // Опционально: CSS стилизация
+        alert.getDialogPane().getStylesheets().add("/style.css");
+
+        // Ожидание ответа
+        alert.showAndWait().ifPresent(response -> {
+            if (response == yesButton) {
+                performLogout();
+            } else if (response == noButton) {
+                // Отмена - ничего не делаем
+            }
+        });
+    }
+
+    private void performLogout() {
+        // Логика выхода
         try {
+
+            // 2. Закрыть текущее окно
+            Stage currentStage = (Stage) btnExit.getScene().getWindow();
+
+            // 3. Показать окно логина или закрыть приложение
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            Parent root = loader.load();
             Stage loginStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
-            loginStage.setScene(new Scene(root, 500, 500));
+            loginStage.setScene(new Scene(root));
             loginStage.setTitle("Вход в систему");
             loginStage.show();
 
+            currentStage.close();
+
         } catch (IOException e) {
             e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Ошибка");
+            errorAlert.setContentText("Не удалось выполнить выход: " + e.getMessage());
+            errorAlert.showAndWait();
         }
     }
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class QuestionTest {
 
+    // проверка на корректное добавление вопроса в таблицу Question
     @Test
     void testQuestionCreation() {
         Question question = new Question();
@@ -23,6 +24,7 @@ class QuestionTest {
         assertNotNull(question.getCreatedAt());
     }
 
+    // проверка валидации сложности
     @Test
     void testQuestionDifficultyValidation() {
         Question question = new Question();
@@ -41,6 +43,7 @@ class QuestionTest {
         assertEquals("Сложный", question.getDifficultyString());
     }
 
+    // // проверка на корректное добавление предмета и темы
     @Test
     void testQuestionWithTopicAndSubject() {
         // Создаем иерархию: Subject → Topic → Question
@@ -59,6 +62,7 @@ class QuestionTest {
         assertEquals("Математика", question.getTopic().getSubject().getName());
     }
 
+    // проверка на корректное добавление вопроса с учителем
     @Test
     void testQuestionWithTeacher() {
         Teacher teacher = new Teacher("math_teacher", "pass123", "Сидоров П.П.", "sidorov@edu.ru");
@@ -72,6 +76,7 @@ class QuestionTest {
         assertEquals("Сидоров П.П.", question.getCreatedBy().getFullName());
     }
 
+    // проверка типов вопросов
     @Test
     void testQuestionTypes() {
         Question question = new Question();

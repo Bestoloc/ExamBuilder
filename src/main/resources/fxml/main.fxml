@@ -46,7 +46,7 @@
                                 Конструктор экзаменационных билетов
                             </Text>
                         </VBox>
-                        <Button text="Выйти"
+                        <Button text="Выйти" fx:id="btnExit"
                                 style="-fx-background-color: #ef4444; -fx-text-fill: white;
                                       -fx-font-weight: bold; -fx-background-radius: 8;
                                       -fx-padding: 8 20; -fx-cursor: hand;"
